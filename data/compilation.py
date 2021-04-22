@@ -52,3 +52,5 @@ tournament_list.append(gh21)
 # Concatenate the data!
 
 main = pd.concat(tournament_list, axis = 0)
+
+print(main)
