@@ -46,6 +46,7 @@ def tournament_scrape(tourn, yr, link, win_type = "WinPm", point_type = "PtsPm -
     final["Tournament"] = tourn
     final["Season"] = yr
     final = final.rename(columns={point_type: 'Score'})
+    final = final.rename(columns={win_type: 'Win'})
     final["Score"] = final["Score"].astype(float)
     final["Z"] = stats.zscore(final["Score"])
 
