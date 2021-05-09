@@ -6,10 +6,12 @@ Debate Results Scraper | Tabroom
 """
 
 from bs4 import BeautifulSoup
-import requests as rq 
+import requests as rq
 import pandas as pd
+import numpy as np
+from scipy import stats
 
-def tournament_scrape(tourn, yr, link, point_type = "Pts -1HL"):
+def tournament_scrape(tourn, yr, link, win_type = "WinPm", point_type = "PtsPm -1HL", code = "Code", name = "Name"):
     file = rq.get(link)
 
     soup = BeautifulSoup(file.text, 'html.parser')
@@ -40,9 +42,11 @@ def tournament_scrape(tourn, yr, link, point_type = "Pts -1HL"):
     headers = [tidy.iloc[0]].pop(0).tolist()
     final = tidy[1:]
     final.columns = headers
-    final = final[["Place", "First", "Last", "State", point_type]]
+    final = final[["Place", code, name, "State", win_type, point_type]]
     final["Tournament"] = tourn
     final["Season"] = yr
     final = final.rename(columns={point_type: 'Score'})
+    final["Score"] = final["Score"].astype(float)
+    final["Z"] = stats.zscore(final["Score"])
 
     return final
